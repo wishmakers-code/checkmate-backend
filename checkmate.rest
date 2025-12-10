@@ -1,0 +1,183 @@
+@baseUrl = http://localhost:8080
+@userId = 1
+
+########################################
+# AUTH MODULE (User / Login / Me)
+########################################
+
+### Health Check (public)
+GET {{baseUrl}}/api/v1/health
+
+
+### Register
+# Run once to create a user; adjust email if needed
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Password123!",
+  "fullName": "Test User"
+}
+
+
+### Login
+# This should set the CHECKMATE_AUTH cookie in VS Code's cookie jar
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Password123!"
+}
+
+
+### Me (verify authentication)
+GET {{baseUrl}}/api/v1/auth/me
+
+
+
+########################################
+# MASTER PROFILE MODULE
+########################################
+
+### Create or Update Master Profile (upsert)
+POST {{baseUrl}}/api/v1/master-profile/{{userId}}
+Content-Type: application/json
+
+{
+  "headline": "Senior Platform / DevOps Engineer",
+  "summary": "9+ years building internal platforms, CI/CD, and database DevOps at scale.",
+  "location": "Atlanta, GA",
+  "contactInfo": {
+    "email": "testuser@example.com",
+    "phone": "555-123-4567",
+    "links": [
+      "https://linkedin.com/in/your-profile"
+    ]
+  },
+  "skills": [
+    {
+      "name": "Java",
+      "level": "expert"
+    },
+    {
+      "name": "Spring Boot",
+      "level": "expert"
+    },
+    {
+      "name": "PostgreSQL",
+      "level": "advanced"
+    }
+  ]
+}
+
+
+### Get Master Profile Aggregate (profile + experiences + projects)
+GET {{baseUrl}}/api/v1/master-profile/{{userId}}
+
+
+### Get Experiences for Master Profile
+GET {{baseUrl}}/api/v1/master-profile/{{userId}}/experiences
+
+
+### Get Projects for Master Profile
+GET {{baseUrl}}/api/v1/master-profile/{{userId}}/projects
+
+
+
+########################################
+# JOBS MODULE (Saved Jobs)
+########################################
+
+### Save / Upsert Job Posting for User
+POST {{baseUrl}}/api/v1/jobs/save?userId={{userId}}
+Content-Type: application/json
+
+{
+  "externalId": "linkedin-12345",
+  "title": "Senior Backend Engineer",
+  "company": "Flex",
+  "location": "Remote",
+  "source": "LinkedIn",
+  "jobUrl": "https://linkedin.com/jobs/view/12345",
+  "status": "SAVED",
+  "notes": "High interest. Focus on payments / risk experience.",
+
+  "rawPostingJson": {
+    "rawTitle": "Senior Backend Engineer",
+    "salaryRange": "150k–190k",
+    "description": "Sample description from LinkedIn (trimmed)."
+  },
+
+  "normalizedTags": [
+    "Java",
+    "Spring Boot",
+    "PostgreSQL",
+    "Distributed Systems",
+    "Remote",
+    "Senior"
+  ]
+}
+
+
+### Get Saved Jobs (with optional filters)
+# You can add &q=backend&location=Remote&tag=Spring%20Boot&status=SAVED
+GET {{baseUrl}}/api/v1/jobs/saved?userId={{userId}}
+
+
+### Get Single Job by ID
+# Adjust {id} after you know the job ID from /jobs/saved
+GET {{baseUrl}}/api/v1/jobs/1?userId={{userId}}
+
+
+
+########################################
+# RESUME TAILOR MODULE
+########################################
+
+### Generate Tailored Resume for Job
+# Assumes a job with ID=1 exists for this user
+POST {{baseUrl}}/api/v1/resume/tailor/1?userId={{userId}}
+Content-Type: application/json
+
+{}
+
+# Response includes:
+# - TailoredResumeResponse with resumeJson
+# - resumeJson.header / summary / skills / experience / projects / meta.analysis
+
+
+
+########################################
+# APPLICATIONS MODULE
+########################################
+
+### Create Application for Job (linking optional tailored resume)
+# Assumes:
+#   - JobPosting ID=1 exists for this user
+#   - TailoredResume ID=1 is for that job & user (optional)
+POST {{baseUrl}}/api/v1/applications?userId={{userId}}
+Content-Type: application/json
+
+{
+  "jobPostingId": 1,
+  "tailoredResumeId": 1,
+  "notes": "Applied via company careers page.",
+  "status": "INTERESTED"
+}
+
+
+### List Applications for User
+GET {{baseUrl}}/api/v1/applications?userId={{userId}}
+
+
+### Update Application Status
+# Replace 1 with real application ID from list above
+PUT {{baseUrl}}/api/v1/applications/1/status?userId={{userId}}
+Content-Type: application/json
+
+{
+  "newStatus": "APPLIED",
+  "comment": "Submitted application on 2025-12-10."
+}

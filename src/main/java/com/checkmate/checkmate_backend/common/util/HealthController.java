@@ -1,4 +1,4 @@
-package com.checkmate.checkmate_backend.common.controller;
+package com.checkmate.checkmate_backend.common.util;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

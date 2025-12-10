@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-12-11-01-create-tailored-resumes
+      author: josh
+      changes:
+        - createTable:
+            tableName: tailored_resumes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: job_posting_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: master_profile_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: resume_json
+                  type: jsonb
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: tailored_resumes
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_tailored_resumes_user
+
+        - addForeignKeyConstraint:
+            baseTableName: tailored_resumes
+            baseColumnNames: job_posting_id
+            referencedTableName: job_postings
+            referencedColumnNames: id
+            constraintName: fk_tailored_resumes_job_posting
+
+        - addForeignKeyConstraint:
+            baseTableName: tailored_resumes
+            baseColumnNames: master_profile_id
+            referencedTableName: master_profiles
+            referencedColumnNames: id
+            constraintName: fk_tailored_resumes_master_profile
+
+        - createIndex:
+            tableName: tailored_resumes
+            indexName: idx_tailored_resumes_user_job
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: job_posting_id

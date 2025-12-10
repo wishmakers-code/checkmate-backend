@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-001-users.yaml
+  - include:
+      file: db/changelog/db.changelog-002-master-profiles.yaml
+  - include:
+      file: db/changelog/db.changelog-003-experiences.yaml
+  - include:
+      file: db/changelog/db.changelog-004-projects.yaml
+  - include:
+      file: db/changelog/db.changelog-005-job-postings.yaml
+  - include:
+      file: db/changelog/db.changelog-006-job-postings-status-notes.yaml
+  - include:
+      file: db/changelog/db.changelog-007-tailored-resumes.yaml
+  - include:
+      file: db/changelog/db.changelog-008-applications.yaml

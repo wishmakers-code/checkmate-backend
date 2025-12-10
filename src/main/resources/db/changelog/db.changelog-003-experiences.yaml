@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-experiences
+      author: checkmate
+      changes:
+        - createTable:
+            tableName: experiences
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_experiences
+
+              - column:
+                  name: master_profile_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: company_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: location
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: start_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: end_date
+                  type: DATE
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: is_current
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: experiences
+            baseColumnNames: master_profile_id
+            constraintName: fk_experiences_master_profiles
+            referencedTableName: master_profiles
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createIndex:
+            tableName: experiences
+            indexName: idx_experiences_master_profile_id
+            columns:
+              - column:
+                  name: master_profile_id
+
+        - createIndex:
+            tableName: experiences
+            indexName: idx_experiences_profile_start_date
+            columns:
+              - column:
+                  name: master_profile_id
+              - column:
+                  name: start_date

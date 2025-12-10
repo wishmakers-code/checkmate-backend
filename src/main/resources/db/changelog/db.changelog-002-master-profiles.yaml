@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-master-profiles
+      author: checkmate
+      changes:
+        - createTable:
+            tableName: master_profiles
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_master_profiles
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: headline
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: summary
+                  type: TEXT
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: location
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: contact_info
+                  type: JSONB
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: skills
+                  type: JSONB
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMPTZ
+                  defaultValueComputed: NOW()
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: master_profiles
+            baseColumnNames: user_id
+            constraintName: fk_master_profiles_users
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - createIndex:
+            tableName: master_profiles
+            indexName: idx_master_profiles_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - addUniqueConstraint:
+            tableName: master_profiles
+            columnNames: user_id
+            constraintName: uq_master_profiles_user_id
